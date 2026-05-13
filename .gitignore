@@ -1,0 +1,14 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# ChromaDB data
+chroma_db/
+
+# Mac
+.DS_Store
+
+# Streamlit
+.streamlit/
