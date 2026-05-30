@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import time
 
-API_URL = "http://127.0.0.1:8001"
+API_URL = "http://127.0.0.1:8000"
 
 if not st.session_state.get("token"):
     st.switch_page("app.py")

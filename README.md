@@ -17,7 +17,7 @@ Custom Chatbot Creator is a full-stack SaaS platform where businesses paste a UR
 
 ## ✨ Features
 
-- 🌐 **Intelligent Web Scraping** — crawls the given URL and all linked pages on the same domain (up to 10 pages)
+- 🌐 **Intelligent Web Scraping** — crawls the given URL and all linked pages on the same domain using Playwright (JS-rendered pages supported) with BeautifulSoup as fallback
 - 🧠 **Custom RAG Pipeline** — built from scratch without LangChain: chunking, embedding, vector search, and LLM chaining all custom implemented
 - ⚡ **Async Processing** — scraping and embedding runs in the background via Celery + Upstash Redis
 - 💬 **Embeddable Widget** — lightweight vanilla JS chat bubble, paste one script tag into any website
@@ -33,7 +33,7 @@ Custom Chatbot Creator is a full-stack SaaS platform where businesses paste a UR
 |---|---|---|
 | Backend API | FastAPI (Python) | REST API, auth, business logic |
 | Task Queue | Celery + Upstash Redis | Async background scraping and embedding |
-| Vector Database | ChromaDB | Storing and querying embeddings |
+| Vector Database | ChromaDB / Chroma Cloud | Storing and querying embeddings |
 | LLM | Groq (LLaMA 3.1 8B Instant) | Generating answers |
 | Embeddings | HuggingFace (sentence-transformers) | Converting text to vectors |
 | Database | Supabase (PostgreSQL) | Users, chatbots, messages |
@@ -102,6 +102,9 @@ Create a `.env` file inside `backend/`:
     UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token
     GROQ_API_KEY=your_groq_api_key
     SECRET_KEY=your_jwt_secret_key
+    CHROMA_TENANT=your_chroma_tenant        # optional: for Chroma Cloud (production)
+    CHROMA_DATABASE=your_chroma_database    # optional: for Chroma Cloud (production)
+    CHROMA_API_KEY=your_chroma_api_key      # optional: falls back to local ChromaDB if not set
 
 ---
 
@@ -157,11 +160,11 @@ Visit http://localhost:8501 in your browser.
 After creating a chatbot, go to the Config page and copy your embed code:
 
     <script
-      src="https://your-cdn.com/widget.js"
+      src="https://yourusername.github.io/custom-chatbot-creator/widget.js"
       data-chatbot-id="your-chatbot-id"
       data-color="#007bff"
       data-welcome="Hi! How can I help you?"
-      data-api-url="https://your-backend.railway.app">
+      data-api-url="https://your-backend.onrender.com">
     </script>
 
 Paste into any website's HTML — a floating chat bubble appears instantly.

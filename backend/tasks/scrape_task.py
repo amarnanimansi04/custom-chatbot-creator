@@ -6,7 +6,7 @@ from rag.vectorstore import VectorStore
 from database import SessionLocal
 import models
 
-scraper = WebScraper(max_pages=10)  # crawl up to 10 pages
+scraper = WebScraper(max_pages=500)  # no practical cap
 chunker = TextChunker()
 vectorstore = VectorStore()
 # ✅ Removed top-level: embedder = Embedder()
@@ -27,7 +27,19 @@ def process_url(self, chatbot_id: str, url: str):
         db.commit()
 
         # ── Scrape entire site (follows links) ──
-        pages = scraper.scrape_site(url)
+        # Seed with key business pages first
+        from urllib.parse import urlparse
+        base = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
+        seed_urls = [
+            url,
+            f"{base}/premium-packages",
+            f"{base}/destinations",
+            f"{base}/day-trips",
+            f"{base}/visa",
+            f"{base}/terms",
+            f"{base}/about",
+        ]
+        pages = scraper.scrape_site(url, seed_urls=seed_urls)
         successful_pages = [p for p in pages if p["success"]]
 
         if not successful_pages:

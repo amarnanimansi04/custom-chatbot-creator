@@ -54,7 +54,7 @@ def chat(data: ChatRequest, db: Session = Depends(get_db)):
 
     # RAG: embed question → find chunks → generate answer
     question_embedding = embedder.embed(data.message)
-    chunks = vectorstore.query(data.chatbot_id, question_embedding, n_results=5)
+    chunks = vectorstore.query(data.chatbot_id, question_embedding, n_results=6)
     response = chain.answer(data.message, chunks, chatbot.welcome_message)
 
     # Save assistant message  ← fix 4: use chatbot_uuid not data.chatbot_id

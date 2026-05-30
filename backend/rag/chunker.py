@@ -2,7 +2,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from typing import List
 
 class TextChunker:
-    def __init__(self, chunk_size: int = 500, chunk_overlap: int = 50):
+    def __init__(self, chunk_size: int = 1200, chunk_overlap: int = 200):
         """
         chunk_size    = max tokens per chunk (~500 words)
         chunk_overlap = how much chunks overlap (avoids cutting sentences)
@@ -28,7 +28,7 @@ class TextChunker:
                 "metadata": {**metadata, "chunk_index": i}
             }
             for i, chunk in enumerate(chunks)
-            if len(chunk.strip()) > 20  # Skip tiny chunks
+            if len(chunk.strip()) > 10  # Skip only truly empty chunks
         ]
 
     def chunk_scraped_pages(self, pages: list) -> List[dict]:

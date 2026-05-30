@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # ── Config ──────────────────────────────────────────────
-API_URL = "http://127.0.0.1:8001"
+API_URL = "http://127.0.0.1:8000"
 
 st.set_page_config(page_title="Custom Chatbot Creator", page_icon="🤖")
 
@@ -53,4 +53,7 @@ with tab2:
         if res.status_code == 200:
             st.success("Account created! Please login.")
         else:
-            st.error(f"Error: {res.json().get('detail', 'Something went wrong')}")
+            try:
+                st.error(f"Error: {res.json().get('detail', 'Something went wrong')}")
+            except Exception:
+                st.error(f"Error {res.status_code}: {res.text or 'No response from server'}")

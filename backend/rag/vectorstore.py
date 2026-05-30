@@ -5,9 +5,20 @@ import os
 
 class VectorStore:
     def __init__(self):
-        # Persist to disk so data survives restarts
-        persist_dir = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
-        self.client = chromadb.PersistentClient(path=persist_dir)
+        chroma_api_key = os.getenv("CHROMA_API_KEY")
+        if chroma_api_key:
+            # Chroma Cloud — persistent, survives redeploys (production)
+            self.client = chromadb.HttpClient(
+                ssl=True,
+                host="api.trychroma.com",
+                tenant=os.getenv("CHROMA_TENANT"),
+                database=os.getenv("CHROMA_DATABASE"),
+                headers={"x-chroma-token": chroma_api_key}
+            )
+        else:
+            # Local fallback for development
+            persist_dir = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
+            self.client = chromadb.PersistentClient(path=persist_dir)
 
     def get_or_create_collection(self, chatbot_id: str):
         """Each chatbot gets its own isolated collection"""
@@ -36,7 +47,7 @@ class VectorStore:
 
         return len(ids)
 
-    def query(self, chatbot_id: str, question_embedding: List[float], n_results: int = 5) -> List[dict]:
+    def query(self, chatbot_id: str, question_embedding: List[float], n_results: int = 10) -> List[dict]:
         """Find the most relevant chunks for a question"""
         collection = self.get_or_create_collection(chatbot_id)
 
